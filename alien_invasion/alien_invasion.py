@@ -1,0 +1,44 @@
+import sys
+import pygame
+
+from settings import Settings
+from ship import Ship
+
+class AlienInvasion:
+    """管理游戏资源和行为的类"""
+
+    def __init__(self):
+        """初始化游戏并创建游戏资源"""
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.settings = Settings()
+
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_width, self.settings.screen_height))
+        pygame.display.set_caption("Alien Invasion")
+
+        self.ship = Ship(self)
+
+    def run_game(self):
+        """开始游戏的主循环"""
+        while True:
+            #侦听键盘和鼠标事件
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+            #每次循环时都重绘屏幕
+            self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
+
+            #让最近绘制的屏幕可见
+            #它在每次执行 while 循环时都绘制一个空屏幕，并擦去旧屏幕，使得只有新的空屏幕可见。
+            #我们在移动游戏元素时，pygame.display.flip() 将不断更新屏幕，以显示新位置上的元素并隐藏原来位置上的元素，从而营造平滑移动的效果。
+            pygame.display.flip()
+            self.clock.tick(60)
+
+# __name__ 如果作为模块运行，则其值为 __main__
+# 当模块被导入到其他模块时：__name__ = 模块名（文件名去掉 .py 后缀）
+if __name__ == '__main__':
+    alien = AlienInvasion()
+    alien.run_game()
