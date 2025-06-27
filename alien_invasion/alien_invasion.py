@@ -1,7 +1,10 @@
 import sys
+from time import sleep
+
 import pygame
 
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -21,6 +24,10 @@ class AlienInvasion:
         #self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
 
+        # 创建一个用于存储游戏统计信息的实例
+        self.stats = GameStats(self)
+        self.game_active = True
+
         # 创建子弹
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -33,10 +40,11 @@ class AlienInvasion:
         """开始游戏的主循环"""
         while True:
             self._check_events()
-            self.ship.update()
 
-            self._update_bullets()
-            self._update_aliens()
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
 
             self._update_screen()
             self.clock.tick(60)
@@ -140,10 +148,45 @@ class AlienInvasion:
 
         self.settings.fleet_direction *= -1
 
+    def _check_alients_bottom(self):
+        """检查是否有外星人到达了屏幕的下边缘"""
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                # 像飞船被撞到一样进行处理
+                self._ship_hit()
+                break
+
     def _update_aliens(self):
         """更新外星舰队中所有外星人的位置"""
         self._check_fleet_edges()
         self.aliens.update()
+
+        # 检测外星人和飞船之间的碰撞
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            #print("Ship hit!!!")
+            self._ship_hit()
+
+        # 检查是否有外星人到达了屏幕的下边缘
+        self._check_alients_bottom()
+
+    def _ship_hit(self):
+        """响应飞船和外星人的碰撞"""
+        if self.stats.ships_left > 0:
+            # 将ships_left减1
+            self.stats.ships_left -= 1
+
+            # 清空外星人列表和子弹列表
+            self.bullets.empty()
+            self.aliens.empty()
+
+            # 创建一个新的外星舰队，并将飞船放在屏幕底部的中央
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # 暂停
+            sleep(0.5)
+        else:
+            self.game_active = False
 
     def _update_screen(self):
         """更新屏幕上的图像，并切换到新屏幕"""
@@ -158,8 +201,6 @@ class AlienInvasion:
         # 它在每次执行 while 循环时都绘制一个空屏幕，并擦去旧屏幕，使得只有新的空屏幕可见。
         # 我们在移动游戏元素时，pygame.display.flip() 将不断更新屏幕，以显示新位置上的元素并隐藏原来位置上的元素，从而营造平滑移动的效果。
         pygame.display.flip()
-
-
 
 # __name__ 如果作为模块运行，则其值为 __main__
 # 当模块被导入到其他模块时：__name__ = 模块名（文件名去掉 .py 后缀）
