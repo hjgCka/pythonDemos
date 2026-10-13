@@ -1,5 +1,6 @@
 def greet_user(username):
-    """显示简单的问候语"""
+    """显示简单的问候语
+    这种是多行字符串，还是会占据内存，最好别这样用，当作注释不好"""
     print(f"hello {username.title()}")
 
 greet_user('jack')

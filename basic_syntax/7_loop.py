@@ -10,5 +10,6 @@ while unconfirmed_users:
 
 pets = ['dog', 'cat', 'rabbit', 'cat']
 while 'cat' in pets:
+    # 一次只删除一个，循环遍历，多次执行
     pets.remove('cat')
 print(pets)

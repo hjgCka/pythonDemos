@@ -22,8 +22,9 @@ pizza = {
     'crust': 'thick',
     'toppings': ['mushrooms', 'extra cheese'],
 }
+# print可以用2行来表示，f""或""都行，除了第一行都要加上缩进，会自动将2行拼起来
 print(f"you ordered a {pizza['crust']}-crust pizza"
-      "with the following toppings:")
+    " with the following toppings:")
 
 for topping in pizza['toppings']:
     print(f"\t{topping}")
