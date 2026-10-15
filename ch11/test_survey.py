@@ -1,9 +1,10 @@
 import pytest
 from survey import AnonymousSurvey
 
+# 使用pytest提供的装饰器来生成夹具
 @pytest.fixture
 def language_survey():
-    """一个可供所有测试函数使用地AnonymousSurvey实例"""
+    """一个可供所有测试函数使用的AnonymousSurvey实例"""
     question = "What language did you first learn to speak"
     language_survey = AnonymousSurvey(question)
     return language_survey

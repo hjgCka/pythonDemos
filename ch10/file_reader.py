@@ -13,3 +13,8 @@ for line in lines:
 
 print(pi_string)
 print(len(pi_string))
+
+if  "12" in pi_string:
+    print("12 in the pi string")
+else:
+    print("12 not in the pi string")
